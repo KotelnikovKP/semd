@@ -1,24 +1,27 @@
 from django.contrib.auth.models import User
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from backend.filters import MedicalServiceFilter, DiagnosisFilter, MedicalOrganizationFilter, LaboratoryTestFilter
+from backend.filters import MedicalServiceFilter, DiagnosisFilter, MedicalOrganizationFilter, LaboratoryTestFilter, \
+    PatientFilter
 from backend.helpers import expand_dict
-from backend.models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest
-from backend.permissions import MedicalServicePermission, DiagnosisPermission, MedicalOrganizationPermission, \
-    LaboratoryTestPermission
+from backend.models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest, Patient
+from backend.permissions import OnlyListPermission, ListRetrievePermission, PatientPermission
 # from backend.permissions import SemdPermission
 from backend.serializers import simple_responses, UserRegisterSerializer, UserCreateSerializer, UserDetailsSerializer, \
     MedicalServiceSerializer, MedicalServiceListSerializer, DiagnosisSerializer, DiagnosisListSerializer, \
     MedicalOrganizationSerializer, MedicalOrganizationListSerializer, LaboratoryTestSerializer, \
-    LaboratoryTestListSerializer
+    LaboratoryTestListSerializer, PatientSerializer, PatientListSerializer, PatientDetailsSerializer, \
+    PatientDiagnosisListSerializer
 from backend.services import CreateUserService, GetUserDetailsService, GetMedicalServiceListService, \
-    GetDiagnosisListService, GetMedicalOrganizationListService, GetLaboratoryTestListService
+    GetDiagnosisListService, GetMedicalOrganizationListService, GetLaboratoryTestListService, GetPatientListService, \
+    GetPatientDetailsService, GetPatientDiagnosesService
 
 
 @extend_schema(tags=['Auth'])
@@ -78,7 +81,7 @@ class UserRegisterViewSet(ModelViewSet):
 @extend_schema(tags=['Medical Service'])
 class MedicalServiceViewSet(ModelViewSet):
 
-    permission_classes = (MedicalServicePermission, )
+    permission_classes = (OnlyListPermission, )
     queryset = MedicalService.objects.all()
     serializer_class = MedicalServiceSerializer
     filterset_class = MedicalServiceFilter
@@ -92,14 +95,14 @@ class MedicalServiceViewSet(ModelViewSet):
         """
             Retrieve list of medical services
         """
-        equipment_type_list = GetMedicalServiceListService.execute(request, self, *args, **kwargs)
-        return Response(equipment_type_list.data)
+        medical_service_list = GetMedicalServiceListService.execute(request, self, *args, **kwargs)
+        return Response(medical_service_list.data)
 
 
 @extend_schema(tags=['Diagnosis'])
 class DiagnosisViewSet(ModelViewSet):
 
-    permission_classes = (DiagnosisPermission, )
+    permission_classes = (OnlyListPermission, )
     queryset = Diagnosis.objects.all()
     serializer_class = DiagnosisSerializer
     filterset_class = DiagnosisFilter
@@ -113,14 +116,14 @@ class DiagnosisViewSet(ModelViewSet):
         """
             Retrieve list of diagnoses
         """
-        equipment_type_list = GetDiagnosisListService.execute(request, self, *args, **kwargs)
-        return Response(equipment_type_list.data)
+        diagnosis_list = GetDiagnosisListService.execute(request, self, *args, **kwargs)
+        return Response(diagnosis_list.data)
 
 
 @extend_schema(tags=['Medical Organization'])
 class MedicalOrganizationViewSet(ModelViewSet):
 
-    permission_classes = (MedicalOrganizationPermission, )
+    permission_classes = (OnlyListPermission, )
     queryset = MedicalOrganization.objects.all()
     serializer_class = MedicalOrganizationSerializer
     filterset_class = MedicalOrganizationFilter
@@ -134,14 +137,14 @@ class MedicalOrganizationViewSet(ModelViewSet):
         """
             Retrieve list of medical organizations
         """
-        equipment_type_list = GetMedicalOrganizationListService.execute(request, self, *args, **kwargs)
-        return Response(equipment_type_list.data)
+        medical_organization_list = GetMedicalOrganizationListService.execute(request, self, *args, **kwargs)
+        return Response(medical_organization_list.data)
 
 
 @extend_schema(tags=['Laboratory test'])
 class LaboratoryTestViewSet(ModelViewSet):
 
-    permission_classes = (LaboratoryTestPermission, )
+    permission_classes = (OnlyListPermission, )
     queryset = LaboratoryTest.objects.all()
     serializer_class = LaboratoryTestSerializer
     filterset_class = LaboratoryTestFilter
@@ -155,5 +158,51 @@ class LaboratoryTestViewSet(ModelViewSet):
         """
             Retrieve list of laboratory tests
         """
-        equipment_type_list = GetLaboratoryTestListService.execute(request, self, *args, **kwargs)
-        return Response(equipment_type_list.data)
+        laboratory_test_list = GetLaboratoryTestListService.execute(request, self, *args, **kwargs)
+        return Response(laboratory_test_list.data)
+
+
+@extend_schema(tags=['Patient'])
+class PatientViewSet(ModelViewSet):
+
+    permission_classes = (PatientPermission, )
+    queryset = Patient.objects.all()
+    serializer_class = PatientSerializer
+    filterset_class = PatientFilter
+
+    @extend_schema(
+        summary='Retrieve paginated and filtered list of patients',
+        description='Retrieve paginated and filtered list of patients, bla-bla-bla...',
+        responses=expand_dict({status.HTTP_200_OK: PatientListSerializer, }, simple_responses),
+    )
+    def list(self, request: Request, *args, **kwargs):
+        """
+            Retrieve list of patients
+        """
+        patient_list = GetPatientListService.execute(request, self, *args, **kwargs)
+        return Response(patient_list.data)
+
+    @extend_schema(
+        summary='Retrieve detail of patient',
+        description='Retrieve detail of patient, bla-bla-bla...',
+        responses=expand_dict({status.HTTP_200_OK: PatientDetailsSerializer, }, simple_responses),
+    )
+    def retrieve(self, request, *args, **kwargs):
+        """
+            Retrieve detail of patient
+        """
+        patient_details = GetPatientDetailsService.execute(request, self, *args, **kwargs)
+        return Response(patient_details.data)
+
+    @extend_schema(
+        summary='Retrieve diagnoses of patient',
+        description='Retrieve diagnoses of patient, bla-bla-bla...',
+        responses=expand_dict({status.HTTP_200_OK: PatientDiagnosisListSerializer, }, simple_responses),
+    )
+    @action(detail=True)
+    def diagnoses(self, request, *args, **kwargs):
+        """
+            Retrieve diagnoses of patient
+        """
+        patient_diagnoses = GetPatientDiagnosesService.execute(request, self, *args, **kwargs)
+        return Response(patient_diagnoses.data)
