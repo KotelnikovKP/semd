@@ -131,6 +131,27 @@ class PatientDiagnosis(models.Model):
         )
 
 
+class PatientMedicalCard(models.Model):
+    card_type = models.CharField(max_length=3, verbose_name='Medical card type')
+    card_number = models.CharField(max_length=40, verbose_name='Medical card number')
+    patient = models.ForeignKey('Patient', on_delete=models.PROTECT, related_name='medical_cards',
+                                null=True, blank=True, verbose_name='patient')
+
+    def __str__(self):
+        return str(self.patient_id) + ' ' + str(self.card_type) + ' ' + str(self.card_number)
+
+    class Meta:
+        verbose_name = 'Patient medical card'
+        verbose_name_plural = 'Patients medical cards'
+        ordering = ['patient_id']
+        indexes = (
+            Index(fields=['card_number'], name='pat_car__card_number__idx'),
+        )
+        constraints = (
+            UniqueConstraint(fields=['patient_id', 'card_type', 'card_number'], name='pat_car__snils_t_n__unq'),
+        )
+
+
 class SEMD2(models.Model):
     internal_message_id = models.CharField(max_length=36, primary_key=True,
                                            verbose_name='Structured Electronic Medical Document identifier')
