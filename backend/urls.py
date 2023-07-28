@@ -1,18 +1,19 @@
 from django.urls import path, include
 
-from backend.routers import UserRouter, MedicalServiceRouter, DiagnosisRouter, MedicalOrganizationRouter, \
-    LaboratoryTestRouter
+from backend.routers import UserRouter, OnlyListRouter, ListRetrieveRouter
 from backend.views import UserRegisterViewSet, SemdCustomTokenObtainPairView, SemdCustomTokenRefreshView, \
-    MedicalServiceViewSet, DiagnosisViewSet, MedicalOrganizationViewSet, LaboratoryTestViewSet
+    MedicalServiceViewSet, DiagnosisViewSet, MedicalOrganizationViewSet, LaboratoryTestViewSet, PatientViewSet
 
-medical_service_router = MedicalServiceRouter()
+medical_service_router = OnlyListRouter()
 medical_service_router.register(r'medical_service', MedicalServiceViewSet)
-diagnosis_router = DiagnosisRouter()
+diagnosis_router = OnlyListRouter()
 diagnosis_router.register(r'diagnosis', DiagnosisViewSet)
-medical_organization_router = MedicalOrganizationRouter()
+medical_organization_router = OnlyListRouter()
 medical_organization_router.register(r'medical_organization', MedicalOrganizationViewSet)
-laboratory_test_router = LaboratoryTestRouter()
+laboratory_test_router = OnlyListRouter()
 laboratory_test_router.register(r'laboratory_test', LaboratoryTestViewSet)
+patient_router = ListRetrieveRouter()
+patient_router.register(r'patient', PatientViewSet)
 user_router = UserRouter()
 user_router.register(r'user', UserRegisterViewSet)
 
@@ -21,6 +22,7 @@ urlpatterns = [
     path('api/', include(diagnosis_router.urls)),
     path('api/', include(medical_organization_router.urls)),
     path('api/', include(laboratory_test_router.urls)),
+    path('api/', include(patient_router.urls)),
     path('api/', include(user_router.urls)),
     path("api/user/login", SemdCustomTokenObtainPairView.as_view(), name="token"),
     path("api/user/refresh_token", SemdCustomTokenRefreshView.as_view(), name="refresh_token"),
