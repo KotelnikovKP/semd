@@ -7,16 +7,18 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from backend.filters import MedicalServiceFilter, DiagnosisFilter, MedicalOrganizationFilter
+from backend.filters import MedicalServiceFilter, DiagnosisFilter, MedicalOrganizationFilter, LaboratoryTestFilter
 from backend.helpers import expand_dict
-from backend.models import MedicalService, Diagnosis, MedicalOrganization
-from backend.permissions import MedicalServicePermission, DiagnosisPermission, MedicalOrganizationPermission
+from backend.models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest
+from backend.permissions import MedicalServicePermission, DiagnosisPermission, MedicalOrganizationPermission, \
+    LaboratoryTestPermission
 # from backend.permissions import SemdPermission
 from backend.serializers import simple_responses, UserRegisterSerializer, UserCreateSerializer, UserDetailsSerializer, \
     MedicalServiceSerializer, MedicalServiceListSerializer, DiagnosisSerializer, DiagnosisListSerializer, \
-    MedicalOrganizationSerializer, MedicalOrganizationListSerializer
+    MedicalOrganizationSerializer, MedicalOrganizationListSerializer, LaboratoryTestSerializer, \
+    LaboratoryTestListSerializer
 from backend.services import CreateUserService, GetUserDetailsService, GetMedicalServiceListService, \
-    GetDiagnosisListService, GetMedicalOrganizationListService
+    GetDiagnosisListService, GetMedicalOrganizationListService, GetLaboratoryTestListService
 
 
 @extend_schema(tags=['Auth'])
@@ -133,4 +135,25 @@ class MedicalOrganizationViewSet(ModelViewSet):
             Retrieve list of medical organizations
         """
         equipment_type_list = GetMedicalOrganizationListService.execute(request, self, *args, **kwargs)
+        return Response(equipment_type_list.data)
+
+
+@extend_schema(tags=['Laboratory test'])
+class LaboratoryTestViewSet(ModelViewSet):
+
+    permission_classes = (LaboratoryTestPermission, )
+    queryset = LaboratoryTest.objects.all()
+    serializer_class = LaboratoryTestSerializer
+    filterset_class = LaboratoryTestFilter
+
+    @extend_schema(
+        summary='Retrieve paginated and filtered list of laboratory tests',
+        description='Retrieve paginated and filtered list of laboratory tests, bla-bla-bla...',
+        responses=expand_dict({status.HTTP_200_OK: LaboratoryTestListSerializer, }, simple_responses),
+    )
+    def list(self, request: Request, *args, **kwargs):
+        """
+            Retrieve list of laboratory tests
+        """
+        equipment_type_list = GetLaboratoryTestListService.execute(request, self, *args, **kwargs)
         return Response(equipment_type_list.data)

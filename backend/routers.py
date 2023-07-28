@@ -60,3 +60,13 @@ class MedicalOrganizationRouter(routers.SimpleRouter):
                       initkwargs={'suffix': 'List'}),
     ]
 
+
+class LaboratoryTestRouter(routers.SimpleRouter):
+    routes = [
+        routers.Route(url=r'^{prefix}$',
+                      mapping={'get': 'list'},
+                      name='{basename}-list',
+                      detail=False,
+                      initkwargs={'suffix': 'List'}),
+    ]
+
