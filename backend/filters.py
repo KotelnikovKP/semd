@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
 
-from backend.models import MedicalService, Diagnosis, MedicalOrganization
+from backend.models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest
 
 
 def filter_medical_service_q(queryset, name, value):
@@ -143,5 +143,46 @@ class MedicalOrganizationFilter(filters.FilterSet):
     class Meta:
         model = MedicalOrganization
         fields = ['oid', 'regionId', 'moAgencyKind']
+
+
+def filter_laboratory_test_q(queryset, name, value):
+    return queryset.filter(Q(name__icontains=value) | Q(eng_name__icontains=value) | Q(short_name__icontains=value) |
+                           Q(group_tests__icontains=value) | Q(mkb10_codes__icontains=value))
+
+
+def filter_laboratory_test_id(queryset, name, value):
+    return queryset.filter(id__icontains=value)
+
+
+def filter_laboratory_test_group_tests(queryset, name, value):
+    return queryset.filter(group_tests__icontains=value)
+
+
+def filter_laboratory_test_mkb10_codes(queryset, name, value):
+    return queryset.filter(mkb10_codes__icontains=value)
+
+
+class LaboratoryTestFilter(filters.FilterSet):
+    """
+        Laboratory test filters
+    """
+    q = \
+        filters.CharFilter(label='Laboratory test name, eng_name, short_name, group_tests or mkb10_codes '
+                                 'for result set filtering (by content case insensitive).',
+                           method=filter_laboratory_test_q)
+    id = \
+        filters.CharFilter(label='Laboratory test id for result set filtering (by content case insensitive).',
+                           method=filter_laboratory_test_id)
+    group_tests = \
+        filters.CharFilter(label='Laboratory test group_tests for result set filtering.',
+                           method=filter_laboratory_test_group_tests)
+
+    mkb10_codes = \
+        filters.CharFilter(label='Laboratory test mkb10_codes for result set filtering.',
+                           method=filter_laboratory_test_mkb10_codes)
+
+    class Meta:
+        model = LaboratoryTest
+        fields = ['id', 'group_tests', 'mkb10_codes']
 
 

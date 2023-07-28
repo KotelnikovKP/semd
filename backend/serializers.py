@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers, status
 
-from backend.models import MedicalService, Diagnosis, MedicalOrganization
+from backend.models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest
 
 
 class SimpleResponseSerializer(serializers.Serializer):
@@ -159,5 +159,22 @@ class MedicalOrganizationListSerializer(BaseResponseSerializer):
         Medical organization list schema
     """
     result = MedicalOrganizationSerializer(many=True)
+    retExtInfo = PaginationListSerializer()
+
+
+class LaboratoryTestSerializer(serializers.ModelSerializer):
+    """
+        Standard laboratory test schema (for all responses)
+    """
+    class Meta:
+        model = LaboratoryTest
+        fields = ('id', 'name', 'eng_name', 'short_name', 'group_tests', 'mkb10_codes')
+
+
+class LaboratoryTestListSerializer(BaseResponseSerializer):
+    """
+        Laboratory test list schema
+    """
+    result = LaboratoryTestSerializer(many=True)
     retExtInfo = PaginationListSerializer()
 

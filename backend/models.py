@@ -72,6 +72,26 @@ class MedicalOrganization(models.Model):
         )
 
 
+class LaboratoryTest(models.Model):
+    id = models.IntegerField(primary_key=True, verbose_name='Laboratory test code')
+    name = models.CharField(max_length=300, verbose_name='Laboratory test name')
+    eng_name = models.CharField(max_length=300, null=True, blank=True, verbose_name='Laboratory test english name')
+    short_name = models.CharField(max_length=250, null=True, blank=True, verbose_name='Laboratory test short name')
+    group_tests = models.CharField(max_length=100, null=True, blank=True, verbose_name='Group tests name')
+    mkb10_codes = models.CharField(max_length=300, null=True, blank=True, verbose_name='Medical service codes')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Laboratory test'
+        verbose_name_plural = 'Laboratory tests'
+        ordering = ['id']
+        indexes = (
+            Index(fields=['name'], name='lab_tes__name__idx'),
+        )
+
+
 class SEMD2(models.Model):
     internal_message_id = models.CharField(max_length=36, primary_key=True,
                                            verbose_name='Structured Electronic Medical Document identifier')
