@@ -162,3 +162,5 @@ sw.*
 
 # Optional eslint cache
 .eslintcache
+
+DATA

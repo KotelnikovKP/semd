@@ -4,11 +4,12 @@ from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.request import Request
 from rest_framework.viewsets import ModelViewSet
 
-from backend.models import PatientDiagnosis
+from backend.models import PatientDiagnosis, PatientMedicalCard
 from backend.serializers import UserRegisterSerializer, UserSerializer, UserCreateSerializer, \
     MedicalServiceListSerializer, PaginationListSerializer, DiagnosisListSerializer, MedicalOrganizationListSerializer, \
     LaboratoryTestListSerializer, PatientListSerializer, PatientSerializer, PatientDetailsSerializer, \
-    PatientDiagnosisListSerializer, PatientDiagnosisSerializer
+    PatientDiagnosisListSerializer, PatientDiagnosisSerializer, PatientMedicalCardListSerializer, \
+    PatientMedicalCardSerializer
 
 
 class CreateUserService:
@@ -474,6 +475,72 @@ class GetPatientDiagnosesService:
                 'retCode': 0,
                 'retMsg': 'Ok' if count > 0 else 'Result set is empty',
                 'result': patient_diagnoses,
+                'retExtInfo': pagination_list_serializer.data,
+                'retTime': int(time.time() * 10 ** 3)
+            }
+        )
+        return_serializer.is_valid()
+
+        return return_serializer
+
+
+class GetPatientMedicalCardsService:
+    @staticmethod
+    def execute(request: Request, view: ModelViewSet, *args, **kwargs) -> PatientMedicalCardListSerializer:
+        """
+            Retrieve medical cards of patient
+        """
+
+        # Check input data
+        snils = kwargs.get("pk", None)
+        if not snils:
+            raise ParseError(f"Request must have 'snils' parameter", code='snils')
+
+        # Get queryset
+        queryset = PatientMedicalCard.objects.filter(patient_id=snils)
+
+        patient_medical_cards = list()
+        for patient_medical_card in queryset:
+            patient_medical_card_serializer = PatientMedicalCardSerializer(
+                data={
+                    "id": patient_medical_card.id,
+                    "patient_id": patient_medical_card.patient_id,
+                    "card_type": patient_medical_card.card_type,
+                    "card_number": patient_medical_card.card_number
+                },
+                instance=patient_medical_card
+            )
+            patient_medical_card_serializer.is_valid()
+            patient_medical_cards.append(patient_medical_card_serializer.data)
+
+        count = len(patient_medical_cards)
+        items_per_page = count
+        start_item_index = 0 if count == 0 else 1
+        end_item_index = count
+        previous_page = None
+        current_page = 1
+        next_page = None
+
+        # Formate pagination list's extra information schema
+        pagination_list_serializer = PaginationListSerializer(
+            data={
+                'count_items': count,
+                'items_per_page': items_per_page,
+                'start_item_index': start_item_index,
+                'end_item_index': end_item_index,
+                'previous_page': previous_page,
+                'current_page': current_page,
+                'next_page': next_page,
+            }
+        )
+        pagination_list_serializer.is_valid()
+
+        # Formate response schema
+        return_serializer = PatientMedicalCardListSerializer(
+            data={
+                'retCode': 0,
+                'retMsg': 'Ok' if count > 0 else 'Result set is empty',
+                'result': patient_medical_cards,
                 'retExtInfo': pagination_list_serializer.data,
                 'retTime': int(time.time() * 10 ** 3)
             }

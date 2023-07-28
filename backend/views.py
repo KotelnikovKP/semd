@@ -18,10 +18,10 @@ from backend.serializers import simple_responses, UserRegisterSerializer, UserCr
     MedicalServiceSerializer, MedicalServiceListSerializer, DiagnosisSerializer, DiagnosisListSerializer, \
     MedicalOrganizationSerializer, MedicalOrganizationListSerializer, LaboratoryTestSerializer, \
     LaboratoryTestListSerializer, PatientSerializer, PatientListSerializer, PatientDetailsSerializer, \
-    PatientDiagnosisListSerializer
+    PatientDiagnosisListSerializer, PatientMedicalCardListSerializer
 from backend.services import CreateUserService, GetUserDetailsService, GetMedicalServiceListService, \
     GetDiagnosisListService, GetMedicalOrganizationListService, GetLaboratoryTestListService, GetPatientListService, \
-    GetPatientDetailsService, GetPatientDiagnosesService
+    GetPatientDetailsService, GetPatientDiagnosesService, GetPatientMedicalCardsService
 
 
 @extend_schema(tags=['Auth'])
@@ -78,7 +78,7 @@ class UserRegisterViewSet(ModelViewSet):
         return Response({"user": user_details.data})
 
 
-@extend_schema(tags=['Medical Service'])
+@extend_schema(tags=['Reference Information'])
 class MedicalServiceViewSet(ModelViewSet):
 
     permission_classes = (OnlyListPermission, )
@@ -99,7 +99,7 @@ class MedicalServiceViewSet(ModelViewSet):
         return Response(medical_service_list.data)
 
 
-@extend_schema(tags=['Diagnosis'])
+@extend_schema(tags=['Reference Information'])
 class DiagnosisViewSet(ModelViewSet):
 
     permission_classes = (OnlyListPermission, )
@@ -120,7 +120,7 @@ class DiagnosisViewSet(ModelViewSet):
         return Response(diagnosis_list.data)
 
 
-@extend_schema(tags=['Medical Organization'])
+@extend_schema(tags=['Reference Information'])
 class MedicalOrganizationViewSet(ModelViewSet):
 
     permission_classes = (OnlyListPermission, )
@@ -141,7 +141,7 @@ class MedicalOrganizationViewSet(ModelViewSet):
         return Response(medical_organization_list.data)
 
 
-@extend_schema(tags=['Laboratory test'])
+@extend_schema(tags=['Reference Information'])
 class LaboratoryTestViewSet(ModelViewSet):
 
     permission_classes = (OnlyListPermission, )
@@ -206,3 +206,16 @@ class PatientViewSet(ModelViewSet):
         """
         patient_diagnoses = GetPatientDiagnosesService.execute(request, self, *args, **kwargs)
         return Response(patient_diagnoses.data)
+
+    @extend_schema(
+        summary='Retrieve medical cards of patient',
+        description='Retrieve medical cards of patient, bla-bla-bla...',
+        responses=expand_dict({status.HTTP_200_OK: PatientMedicalCardListSerializer, }, simple_responses),
+    )
+    @action(detail=True)
+    def medical_cards(self, request, *args, **kwargs):
+        """
+            Retrieve medical cards of patient
+        """
+        patient_medical_cards = GetPatientMedicalCardsService.execute(request, self, *args, **kwargs)
+        return Response(patient_medical_cards.data)
