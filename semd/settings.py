@@ -170,7 +170,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 
-    'DEFAULT_PAGINATION_CLASS': 'backend.pagination.SemdPageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'backend.pagination.pagination.SemdPageNumberPagination',
     'PAGE_SIZE': int(os.environ.get('PAGE_SIZE', 10)),
 
     'DEFAULT_FILTER_BACKENDS': (

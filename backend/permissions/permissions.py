@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class SemdPermission(permissions.BasePermission):
+class FullPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == 'OPTIONS':
             return True
@@ -55,19 +55,3 @@ class ListRetrievePermission(permissions.BasePermission):
             return False
 
 
-class PatientPermission(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.method == 'OPTIONS':
-            return True
-        if view.action in ['list', 'retrieve', 'diagnoses', 'medical_cards']:
-            return request.user.is_authenticated
-        else:
-            return False
-
-    def has_object_permission(self, request, view, obj):
-        if request.method == 'OPTIONS':
-            return True
-        if view.action in ['list', 'retrieve', 'diagnoses', 'medical_cards']:
-            return request.user.is_authenticated
-        else:
-            return False
