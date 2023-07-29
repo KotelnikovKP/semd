@@ -5,7 +5,7 @@ class DiagnosisRegistryPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method == 'OPTIONS':
             return True
-        if view.action in ['list', 'create', 'retrieve', 'update', 'destroy']:
+        if view.action in ['list', 'create', 'retrieve', 'update', 'destroy', 'diagnoses', 'patients']:
             return request.user.is_authenticated
         else:
             return False
@@ -13,7 +13,7 @@ class DiagnosisRegistryPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method == 'OPTIONS':
             return True
-        if view.action in ['list', 'create', 'retrieve', 'update', 'destroy']:
+        if view.action in ['list', 'create', 'retrieve', 'update', 'destroy', 'diagnoses', 'patients']:
             return request.user.is_authenticated
         else:
             return False

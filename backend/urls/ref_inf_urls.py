@@ -1,8 +1,9 @@
 from django.urls import path, include
 
-from backend.controllers.ref_inf_views import MedicalServiceViewSet, DiagnosisViewSet, MedicalOrganizationViewSet, \
+from backend.views.ref_inf_views import MedicalServiceViewSet, DiagnosisViewSet, MedicalOrganizationViewSet, \
     LaboratoryTestViewSet
 from backend.routers.routers import OnlyListRouter
+from semd.settings import API_PREFIX
 
 medical_service_router = OnlyListRouter()
 medical_service_router.register(r'medical_service', MedicalServiceViewSet)
@@ -14,8 +15,8 @@ laboratory_test_router = OnlyListRouter()
 laboratory_test_router.register(r'laboratory_test', LaboratoryTestViewSet)
 
 urlpatterns = [
-    path('api/ref_inf/', include(medical_service_router.urls)),
-    path('api/ref_inf/', include(diagnosis_router.urls)),
-    path('api/ref_inf/', include(medical_organization_router.urls)),
-    path('api/ref_inf/', include(laboratory_test_router.urls)),
+    path(API_PREFIX + 'ref_inf/', include(medical_service_router.urls)),
+    path(API_PREFIX + 'ref_inf/', include(diagnosis_router.urls)),
+    path(API_PREFIX + 'ref_inf/', include(medical_organization_router.urls)),
+    path(API_PREFIX + 'ref_inf/', include(laboratory_test_router.urls)),
 ]

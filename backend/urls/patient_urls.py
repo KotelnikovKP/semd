@@ -1,11 +1,12 @@
 from django.urls import path, include
 
-from backend.controllers.patient_views import PatientViewSet
+from backend.views.patient_views import PatientViewSet
 from backend.routers.routers import ListRetrieveRouter
+from semd.settings import API_PREFIX
 
 patient_router = ListRetrieveRouter()
 patient_router.register(r'patient', PatientViewSet)
 
 urlpatterns = [
-    path('api/', include(patient_router.urls)),
+    path(API_PREFIX, include(patient_router.urls)),
 ]

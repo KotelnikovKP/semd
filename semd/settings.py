@@ -26,7 +26,9 @@ if os.path.exists(dotenv_path):
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY: str = os.environ.get('SECRET_KEY')
+SECRET_KEY: str = os.environ.get('SECRET_KEY', '')
+
+API_PREFIX = 'api/v1/'
 
 DATABASE_HOST: str = os.environ.get('DATABASE_HOST', '127.0.0.1')
 DATABASE_PORT: str = os.environ.get('DATABASE_PORT', '5432')
@@ -150,8 +152,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = "/api/v1/signin"
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=2),
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=int(os.environ.get('ACCESS_TOKEN_LIFETIME', 60 * 60 * 24))),
+    "REFRESH_TOKEN_LIFETIME": timedelta(seconds=int(os.environ.get('REFRESH_TOKEN_LIFETIME', 60 * 60 * 24 * 30))),
 }
 
 CORS_ORIGIN_WHITELIST = ["http://localhost:3000", "http://127.0.0.1:3000"]
