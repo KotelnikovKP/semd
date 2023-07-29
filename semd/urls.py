@@ -18,11 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
+from semd.settings import API_PREFIX
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('backend.urls.auth_urls')),
     path('', include('backend.urls.ref_inf_urls')),
     path('', include('backend.urls.patient_urls')),
-    path('api/schema', SpectacularAPIView.as_view(), name='schema'),
-    path('api/docs', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
+    path('', include('backend.urls.registry_urls')),
+    path(API_PREFIX + 'schema', SpectacularAPIView.as_view(), name='schema'),
+    path(API_PREFIX + 'docs', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
 ]

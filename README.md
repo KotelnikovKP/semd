@@ -116,7 +116,7 @@ python manage.py runserver
 
 #### Using Equipment REST API interface
 
-Find out a description of API methods at http://127.0.0.1:8000/api/docs
+Find out a description of API methods at http://127.0.0.1:8000/api/v1/docs
 
 #### Using Django administration UI for the application
 
