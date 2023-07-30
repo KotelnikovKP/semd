@@ -5,9 +5,7 @@ from backend.models.registry_models import DiagnosisRegistryItem, DiagnosisRegis
 
 
 def filter_diagnosis_registry_q(queryset, name, value):
-    return queryset.filter(Q(name__icontains=value) | Q(short_name__icontains=value) |
-                           Q(diagnoses__diagnosis__mkb_code__icontains=value) |
-                           Q(diagnoses__diagnosis__name__icontains=value))
+    return queryset.filter(Q(name__icontains=value) | Q(short_name__icontains=value))
 
 
 class DiagnosisRegistryFilter(filters.FilterSet):
