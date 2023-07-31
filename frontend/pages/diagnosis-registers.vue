@@ -30,17 +30,20 @@
                         <td>{{ diagnosis_registry.short_name }}</td>
                         <td>{{ diagnosis_registry.name }}</td>
                         <td width="1rem" data="Пациенты" title="Пациенты">
-                            <nuxt-link :to="`/diagnosis-registry-patients/${diagnosis_registry.id}`" class="btn btn-sm btn-outline-secondary">
+                            <nuxt-link :to="`/diagnosis-registry-patients/${diagnosis_registry.id}`"
+                                class="btn btn-sm btn-outline-secondary">
                                 <img src="/images/patients.png" class="image-table" alt="edit">
                             </nuxt-link>
                         </td>
                         <td width="1rem" data="Изменить" title="Изменить">
-                            <nuxt-link :to="`/diagnosis-registry-edit/${diagnosis_registry.id}`" class="btn btn-sm btn-outline-secondary">
+                            <nuxt-link :to="`/diagnosis-registry-edit/${diagnosis_registry.id}`"
+                                class="btn btn-sm btn-outline-secondary">
                                 <img src="/images/edit.png" class="image-table" alt="edit">
                             </nuxt-link>
                         </td>
                         <td width="1rem" data="Удалить" title="Удалить">
-                            <nuxt-link :to="`/diagnosis-registry-delete/${diagnosis_registry.id}`" class="btn btn-sm btn-outline-secondary">
+                            <nuxt-link :to="`/diagnosis-registry-delete/${diagnosis_registry.id}`"
+                                class="btn btn-sm btn-outline-secondary">
                                 <img src="/images/delete.png" class="image-table" alt="delete">
                             </nuxt-link>
                         </td>
@@ -80,6 +83,18 @@
                     <li v-else class="page-item ml-2 disabled">
                         <a class="page-link" href="#">Следующая</a>
                     </li>
+                    <li v-if="page_count > 3" class="page-item ml-2 disabled">
+                        <button class="page-link" style="border: 0">№ стр.:</button>
+                    </li>
+                    <li v-if="page_count > 3" class="page-item ml-2 disabled">
+                        <form class="input-group search-form">
+                            <input type="text" class="form-control" style="width: 5em;" name="searching_page"
+                                v-model="searching_page">
+                            <span class="input-group-btn ml-2">
+                                <button class="btn btn-primary" @click.stop.prevent="fetchPage(searching_page)"> Перейти </button>
+                            </span>
+                        </form>
+                    </li>
                 </ul>
             </nav>
             <div class="row mt-3">
@@ -97,9 +112,9 @@
 
 <script>
 import axios from "axios";
-import default_1111 from "@/layouts/default_1111";
+import default_2826 from "@/layouts/default_2826";
 export default {
-    layout: "default_1111",
+    layout: "default_2826",
     data() {
         return {
             diagnosis_registers: [],
@@ -109,6 +124,7 @@ export default {
             end_item_index: 0,
             previous_page: null,
             current_page: 1,
+            searching_page: 1,
             next_page: null,
             page_count: 0,
             q: '',
