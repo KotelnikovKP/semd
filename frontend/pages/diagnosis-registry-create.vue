@@ -121,11 +121,11 @@
 
 <script>
 import axios from "axios";
-import default_1111 from "@/layouts/default_1111";
+import default_2826 from "@/layouts/default_2826";
 import { required, maxLength } from 'vuelidate/lib/validators'
 
 export default {
-    layout: "default_1111",
+    layout: "default_2826",
     data() {
         return {
             short_name: '',

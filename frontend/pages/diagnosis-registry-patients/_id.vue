@@ -76,6 +76,17 @@
                         <li v-else class="page-item ml-2 disabled">
                             <a class="page-link" href="#">Следующая</a>
                         </li>
+                        <li v-if="page_count > 3" class="page-item ml-2 disabled">
+                            <button class="page-link" style="border: 0">№ стр.:</button>
+                        </li>
+                        <li v-if="page_count > 3" class="page-item ml-2 disabled">
+                            <form class="input-group search-form">
+                                <input type="text" class="form-control" style="width: 5em;" name="searching_page" v-model="searching_page">
+                                <span class="input-group-btn ml-2">
+                                    <button class="btn btn-primary" @click.stop.prevent="fetchPage(searching_page)"> Перейти </button>
+                                </span>
+                            </form>
+                        </li>
                     </ul>
                 </nav>
 
@@ -92,10 +103,10 @@
 
 <script>
 import axios from "axios";
-import default_1111 from "@/layouts/default_1111";
+import default_2826 from "@/layouts/default_2826";
 
 export default {
-    layout: "default_1111",
+    layout: "default_2826",
     data() {
         return {
             id: 0,
@@ -108,6 +119,7 @@ export default {
             end_item_index: 0,
             previous_page: null,
             current_page: 1,
+            searching_page: 1,
             next_page: null,
             page_count: 0,
             q: '',
@@ -138,6 +150,7 @@ export default {
                 this.end_item_index = response.data.retExtInfo.end_item_index;
                 this.previous_page = response.data.retExtInfo.previous_page;
                 this.current_page = response.data.retExtInfo.current_page;
+                this.searching_page = response.data.retExtInfo.current_page;
                 this.next_page = response.data.retExtInfo.next_page;
                 this.page_count = Math.ceil(response.data.retExtInfo.count_items / response.data.retExtInfo.items_per_page);
             } catch ({ response }) {
