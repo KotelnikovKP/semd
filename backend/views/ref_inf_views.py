@@ -5,16 +5,17 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from backend.filters.ref_inf_filters import MedicalServiceFilter, DiagnosisFilter, MedicalOrganizationFilter, \
-    LaboratoryTestFilter
+    LaboratoryTestFilter, MedicalPositionFilter
 from backend.helpers import expand_dict
-from backend.models.ref_inf_models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest
+from backend.models.ref_inf_models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest, \
+    MedicalPosition
 from backend.permissions.permissions import OnlyListPermission
 from backend.serializers.ref_inf_serializers import MedicalServiceSerializer, MedicalServiceListSerializer, \
     DiagnosisSerializer, DiagnosisListSerializer, MedicalOrganizationSerializer, MedicalOrganizationListSerializer, \
-    LaboratoryTestSerializer, LaboratoryTestListSerializer
+    LaboratoryTestSerializer, LaboratoryTestListSerializer, MedicalPositionSerializer, MedicalPositionListSerializer
 from backend.serializers.serializers import simple_responses
 from backend.services.ref_Inf_services import GetMedicalServiceListService, GetDiagnosisListService, \
-    GetMedicalOrganizationListService, GetLaboratoryTestListService
+    GetMedicalOrganizationListService, GetLaboratoryTestListService, GetMedicalPositionListService
 
 
 @extend_schema(tags=['Reference Information'])
@@ -98,4 +99,25 @@ class LaboratoryTestViewSet(ModelViewSet):
             Retrieve list of laboratory tests
         """
         laboratory_test_list = GetLaboratoryTestListService.execute(request, self, *args, **kwargs)
+        return Response(laboratory_test_list.data)
+
+
+@extend_schema(tags=['Reference Information'])
+class MedicalPositionViewSet(ModelViewSet):
+
+    permission_classes = (OnlyListPermission, )
+    queryset = MedicalPosition.objects.all()
+    serializer_class = MedicalPositionSerializer
+    filterset_class = MedicalPositionFilter
+
+    @extend_schema(
+        summary='Retrieve paginated and filtered list of laboratory tests',
+        description='Retrieve paginated and filtered list of laboratory tests, bla-bla-bla...',
+        responses=expand_dict({status.HTTP_200_OK: MedicalPositionListSerializer, }, simple_responses),
+    )
+    def list(self, request: Request, *args, **kwargs):
+        """
+            Retrieve list of laboratory tests
+        """
+        laboratory_test_list = GetMedicalPositionListService.execute(request, self, *args, **kwargs)
         return Response(laboratory_test_list.data)

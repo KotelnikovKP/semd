@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from backend.models.ref_inf_models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest
+from backend.models.ref_inf_models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest, \
+    MedicalPosition
 from backend.serializers.serializers import PaginationListSerializer, BaseResponseSerializer
 
 
@@ -70,6 +71,23 @@ class LaboratoryTestListSerializer(BaseResponseSerializer):
         Laboratory test list schema
     """
     result = LaboratoryTestSerializer(many=True)
+    retExtInfo = PaginationListSerializer()
+
+
+class MedicalPositionSerializer(serializers.ModelSerializer):
+    """
+        Standard MedicalPosition schema (for all responses)
+    """
+    class Meta:
+        model = MedicalPosition
+        fields = ('id', 'pid', 'sort', 'name', 'equivalent')
+
+
+class MedicalPositionListSerializer(BaseResponseSerializer):
+    """
+        MedicalPosition list schema
+    """
+    result = MedicalPositionSerializer(many=True)
     retExtInfo = PaginationListSerializer()
 
 

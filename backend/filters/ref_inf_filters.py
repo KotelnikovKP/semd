@@ -1,7 +1,8 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
 
-from backend.models.ref_inf_models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest
+from backend.models.ref_inf_models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest, \
+    MedicalPosition
 
 
 def filter_medical_service_q(queryset, name, value):
@@ -185,4 +186,28 @@ class LaboratoryTestFilter(filters.FilterSet):
         model = LaboratoryTest
         fields = ['id', 'group_tests', 'mkb10_codes']
 
+
+def filter_medical_position_q(queryset, name, value):
+    return queryset.filter(Q(name__icontains=value) | Q(equivalent__icontains=value))
+
+
+def filter_medical_position_pid(queryset, name, value):
+    return queryset.filter(pid=value)
+
+
+class MedicalPositionFilter(filters.FilterSet):
+    """
+        Medical position filters
+    """
+    q = \
+        filters.CharFilter(label='Medical position name or name equivalent for result set filtering '
+                                 '(by content case insensitive).',
+                           method=filter_medical_position_q)
+    pid = \
+        filters.CharFilter(label='Medical position pid for result set filtering.',
+                           method=filter_medical_position_pid)
+
+    class Meta:
+        model = MedicalPosition
+        fields = ['pid', ]
 
