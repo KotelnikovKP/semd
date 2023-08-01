@@ -92,3 +92,21 @@ class LaboratoryTest(models.Model):
         )
 
 
+class MedicalPosition(models.Model):
+    id = models.IntegerField(primary_key=True, verbose_name='Medical position code')
+    pid = models.IntegerField(null=True, blank=True, verbose_name='Parent code')
+    sort = models.IntegerField(verbose_name='Sort number')
+    name = models.CharField(max_length=180, verbose_name='Medical position name')
+    equivalent = models.CharField(max_length=180, null=True, blank=True, verbose_name='Medical position name equivalent')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Medical position'
+        verbose_name_plural = 'Medical positions'
+        ordering = ['sort']
+        indexes = (
+            Index(fields=['sort'], name='med_pos__sort__idx'),
+            Index(fields=['name'], name='med_pos__name__idx'),
+        )
