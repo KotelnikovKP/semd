@@ -11,9 +11,10 @@ from backend.models.patient_models import Patient
 from backend.permissions.patient_permission import PatientPermission
 from backend.serializers.patient_serializers import PatientSerializer, PatientListSerializer, \
     PatientDetailsSerializer, PatientDiagnosisListSerializer, PatientMedicalCardListSerializer
+from backend.serializers.semd_serializers import SEMDListSerializer
 from backend.serializers.serializers import simple_responses
 from backend.services.patient_services import GetPatientListService, GetPatientDetailsService, \
-    GetPatientDiagnosesService, GetPatientMedicalCardsService
+    GetPatientDiagnosesService, GetPatientMedicalCardsService, GetPatientSemdsService, GetPatientSemdTestsService
 
 
 @extend_schema(tags=['Patient'])
@@ -73,3 +74,29 @@ class PatientViewSet(ModelViewSet):
         """
         patient_medical_cards = GetPatientMedicalCardsService.execute(request, self, *args, **kwargs)
         return Response(patient_medical_cards.data)
+
+    @extend_schema(
+        summary='Retrieve SEMDs of patient',
+        description='Retrieve SEMDs of patient, bla-bla-bla...',
+        responses=expand_dict({status.HTTP_200_OK: SEMDListSerializer, }, simple_responses),
+    )
+    @action(detail=True)
+    def semds(self, request, *args, **kwargs):
+        """
+            Retrieve SEMD list of patient
+        """
+        patient_semds = GetPatientSemdsService.execute(request, self, *args, **kwargs)
+        return Response(patient_semds.data)
+
+    @extend_schema(
+        summary='Retrieve laboratory tests of patient',
+        description='Retrieve laboratory tests of patient, bla-bla-bla...',
+        responses=expand_dict({status.HTTP_200_OK: SEMDListSerializer, }, simple_responses),
+    )
+    @action(detail=True)
+    def tests(self, request, *args, **kwargs):
+        """
+            Retrieve laboratory test list of patient
+        """
+        patient_semd_tests = GetPatientSemdTestsService.execute(request, self, *args, **kwargs)
+        return Response(patient_semd_tests.data)
