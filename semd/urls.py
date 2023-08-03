@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('backend.urls.ref_inf_urls')),
     path('', include('backend.urls.patient_urls')),
     path('', include('backend.urls.registry_urls')),
+    path('', include('backend.urls.semd_urls')),
     path(API_PREFIX + 'schema', SpectacularAPIView.as_view(), name='schema'),
     path(API_PREFIX + 'docs', SpectacularSwaggerView.as_view(url_name='schema'), name='docs'),
 ]
