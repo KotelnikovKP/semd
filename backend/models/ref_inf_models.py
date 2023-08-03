@@ -1,8 +1,6 @@
 from django.db import models
 from django.db.models import Index
 
-from backend.models.semd_models import SEMD
-
 
 class MedicalService(models.Model):
     ms_code = models.CharField(max_length=25, primary_key=True, verbose_name='Medical service code')
@@ -113,6 +111,3 @@ class MedicalPosition(models.Model):
             Index(fields=['sort'], name='med_pos__sort__idx'),
             Index(fields=['name'], name='med_pos__name__idx'),
         )
-
-
-semd = SEMD()

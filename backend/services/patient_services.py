@@ -4,10 +4,14 @@ from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.request import Request
 from rest_framework.viewsets import ModelViewSet
 
+from backend.filters.semd_filters import SEMDFilter, SemdTestFilter
 from backend.models.patient_models import PatientDiagnosis, PatientMedicalCard
+from backend.models.semd_models import SEMD, SemdTest
 from backend.serializers.patient_serializers import PatientListSerializer, PatientDetailsSerializer, \
     PatientSerializer, PatientDiagnosisListSerializer, PatientDiagnosisSerializer, PatientMedicalCardListSerializer, \
     PatientMedicalCardSerializer
+from backend.serializers.semd_serializers import SEMDListSerializer, SemdTestListSerializer, SEMDSerializer, \
+    SemdTestSerializer
 from backend.serializers.serializers import PaginationListSerializer
 
 
@@ -234,6 +238,150 @@ class GetPatientMedicalCardsService:
                 'retCode': 0,
                 'retMsg': 'Ok' if count > 0 else 'Result set is empty',
                 'result': patient_medical_cards,
+                'retExtInfo': pagination_list_serializer.data,
+                'retTime': int(time.time() * 10 ** 3)
+            }
+        )
+        return_serializer.is_valid()
+
+        return return_serializer
+
+
+class GetPatientSemdsService:
+    @staticmethod
+    def execute(request: Request, view: ModelViewSet, *args, **kwargs) -> SEMDListSerializer:
+        """
+            Retrieve SEMD list of patient
+        """
+
+        # Check input data
+        patient_id = kwargs.get("pk", None)
+        if not patient_id:
+            raise ParseError(f"Request must have 'snils' parameter", code='snils')
+        try:
+            view.queryset.get(snils=patient_id)
+        except:
+            raise NotFound(f"Patient with snils='{patient_id}' was not found", code='snils')
+
+        # Get queryset
+        queryset = SEMD.objects.filter(patient_id=patient_id).order_by('patient_id', '-service_time')
+
+        # Filter queryset
+        queryset = SEMDFilter(data=request.query_params, queryset=queryset, request=request).qs
+
+        # Paginate queryset
+        page = view.paginate_queryset(queryset)
+        if page is None:
+            semd_list_serializer = SEMDSerializer(queryset, many=True)
+            count = view.paginator.count
+            items_per_page = view.paginator.per_page
+            start_item_index = 0 if count == 0 else 1
+            end_item_index = count
+            previous_page = None
+            current_page = 1
+            next_page = None
+        else:
+            semd_list_serializer = SEMDSerializer(page, many=True)
+            count = view.paginator.page.paginator.count
+            items_per_page = view.paginator.page.paginator.per_page
+            start_item_index = view.paginator.page.start_index()
+            end_item_index = view.paginator.page.end_index()
+            previous_page = view.paginator.page.previous_page_number() if view.paginator.page.has_previous() else None
+            current_page = view.paginator.page.number
+            next_page = view.paginator.page.next_page_number() if view.paginator.page.has_next() else None
+
+        # Formate pagination list's extra information schema
+        pagination_list_serializer = PaginationListSerializer(
+            data={
+                'count_items': count,
+                'items_per_page': items_per_page,
+                'start_item_index': start_item_index,
+                'end_item_index': end_item_index,
+                'previous_page': previous_page,
+                'current_page': current_page,
+                'next_page': next_page,
+            }
+        )
+        pagination_list_serializer.is_valid()
+
+        # Formate response schema
+        return_serializer = SEMDListSerializer(
+            data={
+                'retCode': 0,
+                'retMsg': 'Ok' if count > 0 else 'Result set is empty',
+                'result': semd_list_serializer.data,
+                'retExtInfo': pagination_list_serializer.data,
+                'retTime': int(time.time() * 10 ** 3)
+            }
+        )
+        return_serializer.is_valid()
+
+        return return_serializer
+
+
+class GetPatientSemdTestsService:
+    @staticmethod
+    def execute(request: Request, view: ModelViewSet, *args, **kwargs) -> SemdTestListSerializer:
+        """
+            Retrieve laboratory test list of patient
+        """
+
+        # Check input data
+        patient_id = kwargs.get("pk", None)
+        if not patient_id:
+            raise ParseError(f"Request must have 'snils' parameter", code='snils')
+        try:
+            view.queryset.get(snils=patient_id)
+        except:
+            raise NotFound(f"Patient with snils='{patient_id}' was not found", code='snils')
+
+        # Get queryset
+        queryset = SemdTest.objects.filter(patient_id=patient_id).order_by('patient_id', '-test_time')
+
+        # Filter queryset
+        queryset = SemdTestFilter(data=request.query_params, queryset=queryset, request=request).qs
+
+        # Paginate queryset
+        page = view.paginate_queryset(queryset)
+        if page is None:
+            semd_test_list_serializer = SemdTestSerializer(queryset, many=True)
+            count = view.paginator.count
+            items_per_page = view.paginator.per_page
+            start_item_index = 0 if count == 0 else 1
+            end_item_index = count
+            previous_page = None
+            current_page = 1
+            next_page = None
+        else:
+            semd_test_list_serializer = SemdTestSerializer(page, many=True)
+            count = view.paginator.page.paginator.count
+            items_per_page = view.paginator.page.paginator.per_page
+            start_item_index = view.paginator.page.start_index()
+            end_item_index = view.paginator.page.end_index()
+            previous_page = view.paginator.page.previous_page_number() if view.paginator.page.has_previous() else None
+            current_page = view.paginator.page.number
+            next_page = view.paginator.page.next_page_number() if view.paginator.page.has_next() else None
+
+        # Formate pagination list's extra information schema
+        pagination_list_serializer = PaginationListSerializer(
+            data={
+                'count_items': count,
+                'items_per_page': items_per_page,
+                'start_item_index': start_item_index,
+                'end_item_index': end_item_index,
+                'previous_page': previous_page,
+                'current_page': current_page,
+                'next_page': next_page,
+            }
+        )
+        pagination_list_serializer.is_valid()
+
+        # Formate response schema
+        return_serializer = SemdTestListSerializer(
+            data={
+                'retCode': 0,
+                'retMsg': 'Ok' if count > 0 else 'Result set is empty',
+                'result': semd_test_list_serializer.data,
                 'retExtInfo': pagination_list_serializer.data,
                 'retTime': int(time.time() * 10 ** 3)
             }
