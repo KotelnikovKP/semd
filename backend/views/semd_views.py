@@ -21,7 +21,7 @@ from backend.services.semd_services import GetSemdListService, GetSemdDetailsSer
 class SEMDViewSet(ModelViewSet):
 
     permission_classes = (SEMDPermission, )
-    queryset = SEMD.objects.all()
+    queryset = SEMD.objects.all().order_by('-date_time_create')
     serializer_class = SEMDSerializer
     filterset_class = SEMDFilter
 
@@ -67,7 +67,7 @@ class SEMDViewSet(ModelViewSet):
 class SemdTestViewSet(ModelViewSet):
 
     permission_classes = (ListRetrievePermission, )
-    queryset = SemdTest.objects.all()
+    queryset = SemdTest.objects.all().order_by('-test_time')
     serializer_class = SemdTestSerializer
     filterset_class = SemdTestFilter
 

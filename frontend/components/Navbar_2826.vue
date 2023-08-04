@@ -12,9 +12,6 @@
                 <li class="nav-item active">
                     <nuxt-link class="nav-link" to="/diagnosis-registers">Список регистров ССЗ</nuxt-link>
                 </li>
-                <!-- <li class="nav-item" v-if="user">
-                    <nuxt-link class="nav-link" to="/add_equipment">Добавить оборудование</nuxt-link>
-                </li> -->
                 <li class="nav-item">
                     <nuxt-link class="nav-link" to="/">Возврат к списку прототипов</nuxt-link>
                 </li>

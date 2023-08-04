@@ -13,7 +13,7 @@ def filter_semd_q(queryset, name, value):
                            | Q(medical_service__ms_code__icontains=value)
                            | Q(medical_position__name__icontains=value)
                            | Q(medical_service__name__icontains=value)
-                           | Q(medical_organization__nameFull__icontains=value)
+                           | Q(medical_organization__nameShort__icontains=value)
                            )
 
 

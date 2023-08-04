@@ -77,6 +77,7 @@ class SemdTest(models.Model):
         verbose_name_plural = 'SEMD Tests'
         ordering = ['id']
         indexes = (
+            Index(fields=['test_time'], name='semd_test__time__idx'),
             Index(fields=['patient_id', 'test_time'], name='semd_test__pat_tim__idx'),
             Index(fields=['patient_id', 'laboratory_test_id', 'test_time'], name='semd_test__pat_lt_tim__idx'),
         )
