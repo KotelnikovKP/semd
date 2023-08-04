@@ -42,7 +42,7 @@ class SEMDSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_medical_organization_name(obj) -> serializers.CharField:
-        return obj.medical_organization.nameFull if isinstance(obj, SEMD) else dict(obj)['medical_organization'].nameFull
+        return obj.medical_organization.nameShort if isinstance(obj, SEMD) else dict(obj)['medical_organization'].nameShort
 
     @staticmethod
     def get_medical_position_name(obj) -> serializers.CharField:
