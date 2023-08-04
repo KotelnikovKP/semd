@@ -67,11 +67,12 @@
                     <li v-if="current_page > 3" class="page-item ml-2 disabled">
                         <button class="page-link" style="border: 0">...</button>
                     </li>
-                    <span v-for="i in page_count">
+                    <span v-for="i in [current_page - 2, current_page - 1, current_page, current_page + 1, current_page + 2]">
                         <li v-if="current_page === i" class="page-item ml-2 active">
                             <button class="page-link">{{ i }}</button>
                         </li>
-                        <li v-else-if="(i >= current_page - 2) && (i <= current_page + 2)" class="page-item ml-2">
+                        <li v-else-if="(i >= current_page - 2) && (i <= current_page + 2) && (i > 0) && (i <= page_count)"
+                            class="page-item ml-2">
                             <button class="page-link" @click="fetchPage(i);">{{ i }}</button>
                         </li>
                     </span>
@@ -91,7 +92,8 @@
                             <input type="text" class="form-control" style="width: 5em;" name="searching_page"
                                 v-model="searching_page">
                             <span class="input-group-btn ml-2">
-                                <button class="btn btn-primary" @click.stop.prevent="fetchPage(searching_page)"> Перейти </button>
+                                <button class="btn btn-primary" @click.stop.prevent="fetchPage(searching_page)"> Перейти
+                                </button>
                             </span>
                         </form>
                     </li>

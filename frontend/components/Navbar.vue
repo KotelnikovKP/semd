@@ -12,9 +12,15 @@
                 <li class="nav-item active">
                     <nuxt-link class="nav-link" to="/">Список прототипов</nuxt-link>
                 </li>
-                <!-- <li class="nav-item" v-if="user">
-                    <nuxt-link class="nav-link" to="/add_equipment">Добавить оборудование</nuxt-link>
-                </li> -->
+                <li class="nav-item" v-if="user">
+                    <nuxt-link class="nav-link" to="/semds">СЭМДы</nuxt-link>
+                </li>
+                <li class="nav-item" v-if="user">
+                    <nuxt-link class="nav-link" to="/laboratory_tests">Лабораторные тесты</nuxt-link>
+                </li>
+                <li class="nav-item" v-if="user">
+                    <nuxt-link class="nav-link" to="/patients">Пациенты</nuxt-link>
+                </li>
             </ul>
             <span class="navbar-text mr-2" v-if="user">{{user.username}}</span>
             <span v-if="loggedIn"><nuxt-link class="btn btn-outline-light mr-2" to="/signout">Выход</nuxt-link></span>
