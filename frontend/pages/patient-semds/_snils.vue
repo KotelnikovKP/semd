@@ -5,17 +5,60 @@
 
                 <nav aria-label="breadcrumb" class="mt-4">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><nuxt-link to="/diagnosis-registers">Список регистров ССЗ</nuxt-link>
+                        <li class="breadcrumb-item"><nuxt-link to="/patients">Пациенты</nuxt-link>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Пациенты регистра {{ name }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">СЭМДы по пациенту {{ name }}</li>
                     </ol>
                 </nav>
 
+                <h4 class="my-3">Пациент:</h4>
+                <div class="row mt-3">
+                    <div class="col-md-2">
+                        <div class="md-form mb-0">
+                            <label for="name">СНИЛС</label>
+                            <input type="text" id="snils_str" rows="5" class="form-control" placeholder="СНИЛС"
+                                v-model="snils_str" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="md-form">
+                            <label for="name">ФИО</label>
+                            <input type="text" id="name" rows="5" class="form-control" placeholder="ФИО"
+                                v-model="name" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="md-form mb-0">
+                            <label for="name">Дата рождения</label>
+                            <input type="text" id="birthday_str" rows="5" class="form-control" placeholder="Дата рождения"
+                                v-model="birthday_str" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="md-form mb-0">
+                            <label for="name">Пол</label>
+                            <input type="text" id="gender" rows="5" class="form-control" placeholder="Пол"
+                                v-model="gender" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <div class="md-form mb-0">
+                            <label for="name">Диагнозы</label>
+                            <input type="text" id="diagnoses_str" rows="5" class="form-control" placeholder="Диагнозы"
+                                v-model="diagnoses_str" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="my-3">СЭМДы:</h4>
+ 
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <div class="md-form mb-2">
                             <form class="input-group search-form">
-                                <input type="text" class="form-control" name="q" placeholder="Поиск по пациентам регистра"
+                                <input type="text" class="form-control" name="q" placeholder="Поиск по СЭМДам"
                                     v-model="q">
                                 <span class="input-group-btn ml-2">
                                     <button class="btn btn-secondary" @click.stop.prevent="fetchPage(1)"> Найти </button>
@@ -30,30 +73,27 @@
                         <img width="100em" src="/images/loading-1.gif" class="mx-auto d-block">
                     </div>
                 </div>
-                
-               <table class="table table-striped table-bordered" id="registry_patients_table">
+ 
+                <table class="table table-striped table-bordered" id="semds_table">
                     <thead>
                         <tr>
-                            <th scope="col">СНИЛС</th>
-                            <th scope="col">ФИО</th>
-                            <th scope="col">Пол</th>
-                            <th scope="col">Дата рождения</th>
-                            <th scope="col">Диагнозы</th>
-                            <th scope="col">Выписка</th>
+                            <th scope="col">Дата</th>
+                            <th scope="col">Тип</th>
+                            <th scope="col">Событие</th>
+                            <th scope="col">Диагноз(ы)</th>
+                            <th scope="col">Где</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="registry_patient in registry_patients" :key="registry_patient.snils">
-                            <td>{{ registry_patient.snils.substr(0,3) }}-{{ registry_patient.snils.substr(3,3) }}-{{ registry_patient.snils.substr(6,3) }} {{ registry_patient.snils.substr(9,2) }}</td>
-                            <td>{{ registry_patient.name }}</td>
-                            <td>{{ registry_patient.gender }}</td>
-                            <td>{{ Intl.DateTimeFormat().format(Date.parse(registry_patient.birthday)) }}</td>
-                            <td>{{ registry_patient.diagnoses.reduce(function(sum, current) { return sum != "" ? sum + ", " + current.diagnosis_id : current.diagnosis_id }, "") }}</td>
-                            <td width="1rem" data="Выписка" title="Выписка">
-                                <nuxt-link :to="`/patient-registry-report/${registry_patient.snils}?registry=${id}`" class="btn btn-sm btn-outline-secondary">
-                                    <img src="/images/document.png" class="image-table" alt="patient-card">
-                                </nuxt-link>
-                            </td>
+                        <tr v-for="semd in semds" :key="semd.internal_message_id">
+                            <td><nuxt-link :to="`#`">{{ Intl.DateTimeFormat().format(Date.parse(semd.service_time)) }}</nuxt-link></td>
+                            <td>{{ semd.document_type }}</td>
+                            <td>{{ semd.document_type == '8' ? 'Выписной эпикриз из стационара' : semd.medical_service_name }}</td>
+                            <td>{{ semd.diagnoses }}</td>
+                            <td>{{ semd.doctor }}<br>{{ semd.medical_position_name }}<br>{{ semd.medical_organization_name }}</td>
+                        </tr>
+                        <tr v-show="semds.length == 0" :key="-1">
+                            <td colspan="5">Увы! Ни одного СЭМДа по этому пациенту не найдено.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -106,23 +146,27 @@
                     </div>
                 </div>
 
-            </div>
+            </div> 
         </div>
     </div>
 </template>
 
 <script>
 import axios from "axios";
-import default_2826 from "@/layouts/default_2826";
 
 export default {
-    layout: "default_2826",
     data() {
         return {
-            id: 0,
-            short_name: '',
+            snils: 0,
+            snils_str: '',
             name: '',
-            registry_patients: [],
+            gender: '',
+            birthday: '',
+            birthday_str: '',
+            diagnoses: [],
+            diagnoses_str: '',
+            medical_cards: [],
+            semds: [],
             count_items: 0,
             items_per_page: 0,
             start_item_index: 0,
@@ -137,12 +181,12 @@ export default {
     },
     async asyncData({ params }) {
         return {
-            id: params.id,
+            snils: params.snils,
         }
     },
     head() {
         return {
-            title: "Пациенты региста " + this.name,
+            title: "СЭМДы по пациенту " + this.name,
         }
     },
     methods: {
@@ -151,12 +195,18 @@ export default {
                 let preloader = document.getElementById("preloader");
                 preloader.style.display = "";
                 preloader.scrollIntoView();
-                let registry = await this.$axios.get(`/api/v1/diagnosis_registry/${this.id}`);
-                this.id = registry.data.result.id;
-                this.short_name = registry.data.result.short_name;
-                this.name = registry.data.result.name;
-                let response = await this.$axios.get(`/api/v1/diagnosis_registry/${this.id}/patients?q=${this.q}&page=${p}`);
-                this.registry_patients = response.data.result;
+                let patient = await this.$axios.get(`/api/v1/patient/${this.snils}`);
+                this.snils = patient.data.result.snils;
+                this.snils_str = this.snils.substr(0,3) + '-' + this.snils.substr(3,3) + '-' + this.snils.substr(6,3) + ' ' + this.snils.substr(9,2);
+                this.name = patient.data.result.name;
+                this.gender = patient.data.result.gender;
+                this.birthday = patient.data.result.birthday;
+                this.birthday_str = Intl.DateTimeFormat().format(Date.parse(this.birthday));
+                this.diagnoses = patient.data.result.diagnoses;
+                this.diagnoses_str = this.diagnoses.reduce(function (sum, current) { return sum != "" ? sum + ", " + current.diagnosis_id : current.diagnosis_id }, "")
+                this.medical_cards = patient.data.result.medical_cards;
+                let response = await this.$axios.get(`/api/v1/patient/${this.snils}/semds?q=${this.q}&page=${p}`);
+                this.semds = response.data.result;
                 this.count_items = response.data.retExtInfo.count_items;
                 this.items_per_page = response.data.retExtInfo.items_per_page;
                 this.start_item_index = response.data.retExtInfo.start_item_index;
@@ -172,7 +222,7 @@ export default {
                 this.searching_page = this.current_page;
                 preloader.style.display = "None";
             }
-        },        
+        },
     },
     mounted() {
         this.fetchPage(1);

@@ -44,6 +44,19 @@
                         </div>
                     </div>
 
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="md-form">
+                                <label for="medical_record_transcript_settings">Настройки выписки пациента реестра</label>
+                                <textarea type="text" id="medical_record_transcript_settings" rows="10"
+                                    class="form-control md-textarea" placeholder="Настройки выписки пациента реестра"
+                                    v-model="medical_record_transcript_settings"
+                                    @input="onJSONChange"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-danger" v-if="!isJSONValid"><small>Неверный формат JSON: {{ JSONerr }}</small></div>
+
                     <br>
                     <p>Диагнозы в регистре:</p>
                     <table class="table table-striped table-bordered" id="registry_diagnoses_table">
@@ -131,6 +144,7 @@ export default {
             id: 0,
             short_name: '',
             name: '',
+            medical_record_transcript_settings: {},
             diagnosis_name: '',
             diagnoses: [],
             count_diagnoses: 0,
@@ -138,6 +152,8 @@ export default {
             isOpen: false,
             registry_diagnoses: [],
             removed_registry_diagnoses: [],
+            isJSONValid: true,
+            JSONerr: '',
         }
     },
     async asyncData({ params }) {
@@ -157,9 +173,16 @@ export default {
                 this.id = registry.data.result.id;
                 this.short_name = registry.data.result.short_name;
                 this.name = registry.data.result.name;
+                try {
+                    this.medical_record_transcript_settings = JSON.stringify(registry.data.result.medical_record_transcript_settings, null, 2);
+                } catch (err) {
+                    this.medical_record_transcript_settings = ""
+                }
                 let response = await this.$axios.get(`/api/v1/diagnosis_registry/${this.id}/diagnoses`);
                 this.registry_diagnoses = response.data.result;
                 this.count_diagnoses = response.data.retExtInfo.count_items;
+                console.log(JSON.parse(registry.data.result.medical_record_transcript_settings));
+                console.log(this.medical_record_transcript_settings);
             } catch ({ response }) {
                 console.log(response);
             }
@@ -190,21 +213,30 @@ export default {
                 this.diagnosis_name = '';
             }
         },
+        onJSONChange() {
+            let jsonValue = "";
+            try {
+                jsonValue = JSON.parse(this.medical_record_transcript_settings);
+                this.JSONerr = '';
+                this.isJSONValid = true
+            } catch (err) {
+                this.JSONerr = JSON.stringify(err.message);
+                this.isJSONValid = false
+            }
+        },
         async registryUpdate() {
             this.isOpen = false;
             try {
-                let response = await this.$axios.put(`/api/v1/diagnosis_registry/${this.id}`, { "short_name": this.short_name, "name": this.name });
+                let response = await this.$axios.put(`/api/v1/diagnosis_registry/${this.id}`, { "short_name": this.short_name, "name": this.name, "medical_record_transcript_settings": JSON.parse(this.medical_record_transcript_settings) });
                 console.log(response);
                 for (let i = 0; i < this.removed_registry_diagnoses.length; i += 1) {
                     if (this.removed_registry_diagnoses[i].id != 0) {
                         let response = await this.$axios.delete(`/api/v1/diagnosis_registry_item/${this.removed_registry_diagnoses[i].id}`);
-                        console.log(response);
                     }
                 }
                 for (let i = 0; i < this.registry_diagnoses.length; i += 1) {
                     if (this.registry_diagnoses[i].id == 0) {
                         let response = await this.$axios.post(`/api/v1/diagnosis_registry_item`, { "registry": this.id, "diagnosis": this.registry_diagnoses[i].diagnosis });
-                        console.log(response);
                     }
                 }
                 this.$router.push("/diagnosis-registers");
@@ -228,8 +260,28 @@ export default {
     },
     computed: {
         isComplete() {
-            return !this.$v.$invalid && this.count_diagnoses != 0;
-        }
+            return !this.$v.$invalid && this.count_diagnoses != 0 && this.isJSONValid;
+        },
+        // prettyFormat() {
+        //     this.jsonerror = "";
+        //     let jsonValue = "";
+        //     try {
+        //         jsonValue = JSON.parse(this.medical_record_transcript_settings)
+        //     }
+        //     catch (e) {
+        //         this.jsonerror = JSON.stringify(e.message)
+        //         var textarea = this.$refs.medical_record_transcript_settings
+        //         if (this.jsonerror.indexOf('position') > -1) {
+        //             var positionStr = this.jsonerror.lastIndexOf('position') + 8;
+        //             var posi = parseInt(this.jsonerror.substring(positionStr, this.jsonerror.lastIndexOf('"')));
+        //             if (posi >= 0) {
+        //                 textarea.setSelectionRange(posi, posi + 1);
+        //             }
+        //         }
+        //         return "";
+        //     }
+        //     return JSON.stringify(jsonValue, null, 2);
+        // },
     },
     validations: {
         short_name: {
@@ -250,7 +302,7 @@ export default {
     color: #dc3545;
 }
 
-.fld-error .msg-error {
+.fld-error .msg-error .msg-error-j {
     display: block;
     color: #dc3545;
 }

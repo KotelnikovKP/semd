@@ -8,10 +8,17 @@ class DiagnosisRegistrySerializer(serializers.ModelSerializer):
     """
         Standard diagnosis registry schema
     """
+    # medical_record_transcript_settings = \
+    #     serializers.SerializerMethodField(help_text='Settings of medical record transcript')
+    #
     class Meta:
         model = DiagnosisRegistry
-        fields = ('id', 'name', 'short_name')
+        fields = ('id', 'name', 'short_name', 'medical_record_transcript_settings')
         read_only_fields = ('id', )
+    #
+    # @staticmethod
+    # def get_medical_record_transcript_settings(obj) -> serializers.JSONField:
+    #     return obj.medical_record_transcript_settings
 
 
 class DiagnosisRegistryListSerializer(BaseResponseSerializer):
