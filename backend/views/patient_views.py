@@ -10,9 +10,11 @@ from backend.helpers import expand_dict
 from backend.models.patient_models import Patient
 from backend.permissions.patient_permission import PatientPermission
 from backend.serializers.patient_serializers import PatientSerializer, PatientListSerializer, \
-    PatientDetailsSerializer, PatientDiagnosisListSerializer, PatientMedicalCardListSerializer
+    PatientDetailsSerializer, PatientDiagnosisListSerializer, PatientMedicalCardListSerializer, \
+    PatientRegistryReportDetailSerializer
 from backend.serializers.semd_serializers import SEMDListSerializer
 from backend.serializers.serializers import simple_responses
+from backend.services.patient_report_services import GetPatientRegistryReportService
 from backend.services.patient_services import GetPatientListService, GetPatientDetailsService, \
     GetPatientDiagnosesService, GetPatientMedicalCardsService, GetPatientSemdsService, GetPatientSemdTestsService
 
@@ -96,7 +98,20 @@ class PatientViewSet(ModelViewSet):
     @action(detail=True)
     def tests(self, request, *args, **kwargs):
         """
-            Retrieve laboratory test list of patient
+            Retrieve laboratory tests of patient
         """
         patient_semd_tests = GetPatientSemdTestsService.execute(request, self, *args, **kwargs)
         return Response(patient_semd_tests.data)
+
+    @extend_schema(
+        summary='Retrieve registry report of patient',
+        description='Retrieve registry report of patient, bla-bla-bla...',
+        responses=expand_dict({status.HTTP_200_OK: PatientRegistryReportDetailSerializer, }, simple_responses),
+    )
+    @action(detail=True)
+    def registry_report(self, request, *args, **kwargs):
+        """
+            Retrieve registry report of patient
+        """
+        patient_registry_report = GetPatientRegistryReportService.execute(request, self, *args, **kwargs)
+        return Response(patient_registry_report.data)

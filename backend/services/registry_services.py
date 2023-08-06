@@ -125,6 +125,7 @@ class GetDiagnosisRegistryDetailsService:
                 'id': instance.id,
                 'name': instance.name,
                 'short_name': instance.short_name,
+                'medical_record_transcript_settings': instance.medical_record_transcript_settings,
             },
             instance=instance
         )

@@ -32,7 +32,7 @@
                         <td width="1rem" data="Пациенты" title="Пациенты">
                             <nuxt-link :to="`/diagnosis-registry-patients/${diagnosis_registry.id}`"
                                 class="btn btn-sm btn-outline-secondary">
-                                <img src="/images/patients.png" class="image-table" alt="edit">
+                                <img src="/images/patients.png" class="image-table" alt="patients">
                             </nuxt-link>
                         </td>
                         <td width="1rem" data="Изменить" title="Изменить">

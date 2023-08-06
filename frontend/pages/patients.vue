@@ -31,6 +31,7 @@
                             <th scope="col">ФИО</th>
                             <th scope="col">Пол</th>
                             <th scope="col">Д/Р</th>
+                            <th scope="col">Диагнозы</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -40,9 +41,9 @@
                             <td>{{ patient.name }}</td>
                             <td>{{ patient.gender }}</td>
                             <td>{{ Intl.DateTimeFormat().format(Date.parse(patient.birthday)) }}</td>
+                            <td>{{ patient.diagnoses.reduce(function(sum, current) { return sum != "" ? sum + ", " + current.diagnosis_id : current.diagnosis_id }, "") }}</td>
                             <td width="1rem" data="Детали" title="Детали">
-                                <!-- :to="`/diagnosis-registry-patients/${diagnosis_registry.id}`" -->
-                                <nuxt-link :to="`#`"
+                                <nuxt-link :to="`/patient-semds/${patient.snils}`"
                                     class="btn btn-sm btn-outline-secondary">
                                     <img src="/images/document.png" class="image-table" alt="detail">
                                 </nuxt-link>

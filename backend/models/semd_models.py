@@ -56,6 +56,7 @@ class SEMD(models.Model):
         indexes = (
             Index(fields=['date_time_create'], name='semd__date_time_create__idx'),
             Index(fields=['patient_id', 'service_time'], name='semd__pat_time__idx'),
+            Index(fields=['patient_id', 'medical_service_id', 'service_time'], name='semd__pat_srv_tim__idx'),
         )
 
 

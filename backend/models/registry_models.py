@@ -5,6 +5,7 @@ from django.db.models import Index
 class DiagnosisRegistry(models.Model):
     name = models.CharField(max_length=150, verbose_name='Diagnosis registry name')
     short_name = models.CharField(max_length=25, verbose_name='Diagnosis registry short name')
+    medical_record_transcript_settings = models.JSONField(verbose_name='Settings of medical record transcript')
 
     def __str__(self):
         return self.name

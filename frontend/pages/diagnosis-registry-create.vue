@@ -44,6 +44,19 @@
                         </div>
                     </div>
 
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="md-form">
+                                <label for="medical_record_transcript_settings">Настройки выписки пациента реестра</label>
+                                <textarea type="text" id="medical_record_transcript_settings" rows="10"
+                                    class="form-control md-textarea" placeholder="Настройки выписки пациента реестра"
+                                    v-model="medical_record_transcript_settings"
+                                    @input="onJSONChange"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-danger" v-if="!isJSONValid"><small>Неверный формат JSON: {{ JSONerr }}</small></div>
+
                     <br>
                     <p>Диагнозы в регистре:</p>
                     <table class="table table-striped table-bordered" id="registry_diagnoses_table">
@@ -130,13 +143,16 @@ export default {
         return {
             short_name: '',
             name: '',
+            medical_record_transcript_settings: JSON.stringify({}, null, 2),
             diagnosis_name: '',
             diagnoses: [],
             count_diagnoses: 0,
             count_founded_diagnoses: 0,
             isOpen: false,
-            registry_diagnoses: []
-        }
+            registry_diagnoses: [],
+            isJSONValid: true,
+            JSONerr: '',
+       }
     },
     head() {
         return {
@@ -170,10 +186,21 @@ export default {
                 this.diagnosis_name = '';
             }
         },
+        onJSONChange() {
+            let jsonValue = "";
+            try {
+                jsonValue = JSON.parse(this.medical_record_transcript_settings);
+                this.JSONerr = '';
+                this.isJSONValid = true
+            } catch (err) {
+                this.JSONerr = JSON.stringify(err.message);
+                this.isJSONValid = false
+            }
+        },
         async registryCreate() {
             this.isOpen = false;
             try {
-                let response = await this.$axios.post(`/api/v1/diagnosis_registry`, { "short_name": this.short_name, "name": this.name });
+                let response = await this.$axios.post(`/api/v1/diagnosis_registry`, { "short_name": this.short_name, "name": this.name, "medical_record_transcript_settings": JSON.parse(this.medical_record_transcript_settings) });
                 console.log(response);
                 let registry_id = response.data.result.id;
                 for (let i = 0; i < this.registry_diagnoses.length; i += 1) {
