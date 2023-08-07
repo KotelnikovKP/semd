@@ -20,7 +20,7 @@
                     </div>
                 </div>
 
-                <h4 class="my-3">Пациент:</h4>
+                <h4 class="my-3 text-danger">Пациент:</h4>
                 <div class="row mt-3">
                     <div class="col-md-2">
                         <div class="md-form mb-0">
@@ -61,7 +61,7 @@
                     </div>
                 </div>
 
-                <h4 class="my-3">События:</h4>
+                <h4 class="my-3 text-danger">События:</h4>
                 <table class="table table-striped table-bordered" id="events_table">
                     <thead>
                         <tr>
@@ -82,7 +82,7 @@
                     </tbody>
                 </table>
 
-                <h4 class="my-3">Анализы:</h4>
+                <h4 class="my-3 text-danger">Анализы:</h4>
                 <table class="table table-striped table-bordered" id="medical_tests_table">
                     <thead>
                         <tr>
@@ -103,7 +103,7 @@
                     </tbody>
                 </table>
 
-                <h4 class="my-3">Обследования:</h4>
+                <h4 class="my-3 text-danger">Обследования:</h4>
                 <table class="table table-striped table-bordered" id="medical_examinations_table">
                     <thead>
                         <tr>
@@ -124,7 +124,7 @@
                     </tbody>
                 </table>
 
-                <h4 class="my-3">Проведенное лечение:</h4>
+                <h4 class="my-3 text-danger">Проведенное лечение:</h4>
                 <table class="table table-striped table-bordered" id="treatments_table">
                     <thead>
                         <tr>
@@ -143,7 +143,7 @@
                     </tbody>
                 </table>
 
-                <h4 class="my-3">Рекомендованная терапия на последнем приеме:</h4>
+                <h4 class="my-3 text-danger">Рекомендованная терапия на последнем приеме:</h4>
                 <table class="table table-striped table-bordered" id="recommended_therapies_table">
                     <thead>
                         <tr>

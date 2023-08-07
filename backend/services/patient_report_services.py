@@ -89,7 +89,6 @@ class GetPatientRegistryReportService:
 
     @staticmethod
     def _get_semds(patient_id, registry_report_settings, section, grouped=False):
-        print(f'GET SEMDs, section={section}')
         settings = registry_report_settings.get(section, None)
         if settings:
             records = settings.get('records', None)
@@ -107,23 +106,17 @@ class GetPatientRegistryReportService:
                         filters['document_type'] = document_type
                     if medical_services and not (len(medical_services) == 1 and medical_services[0] == ''):
                         filters['medical_service_id__in'] = medical_services
-                    print(f"    {i}: filter={filters}, ", end='')
                     queryset = SEMD.objects.filter(**filters).order_by('patient_id', '-service_time')
-                    print(f"qty={len(queryset)}, ", end='')
                     entries = record.get('entries', 'last').split(',')
-                    print(f"entries={entries}, ", end='')
                     r_ids = GetPatientRegistryReportService._get_queryset_ids(queryset, entries)
                     ids = ids.union(r_ids)
-                    print(f"r_ids={r_ids}")
                     i += 1
                 if grouped:
                     orders = ['patient_id', 'medical_service_id', '-service_time']
                 else:
                     orders = ['patient_id', '-service_time']
                 queryset = SEMD.objects.\
-                    filter(patient_id=patient_id, internal_message_id__in=list(ids)).\
-                    order_by(*orders)
-                print(f"    len semds = {len(queryset)}")
+                    filter(patient_id=patient_id, internal_message_id__in=list(ids)).order_by(*orders)
             else:
                 queryset = SEMD.objects.none()
         else:
@@ -132,7 +125,6 @@ class GetPatientRegistryReportService:
 
     @staticmethod
     def _get_semd_tests(patient_id, registry_report_settings, section, grouped=False):
-        print(f'GET Semd Tests, section={section}')
         settings = registry_report_settings.get(section, None)
         if settings:
             records = settings.get('records', None)
@@ -147,23 +139,17 @@ class GetPatientRegistryReportService:
                         filters['test_time__gte'] = date_after
                     if laboratory_tests and not (len(laboratory_tests) == 1 and laboratory_tests[0] == ''):
                         filters['laboratory_test_id__in'] = laboratory_tests
-                    print(f"    {i}: filter={filters}, ", end='')
                     queryset = SemdTest.objects.filter(**filters).order_by('patient_id', '-test_time')
-                    print(f"qty={len(queryset)}, ", end='')
                     entries = record.get('entries', 'last').split(',')
-                    print(f"entries={entries}, ", end='')
                     r_ids = GetPatientRegistryReportService._get_queryset_ids(queryset, entries)
                     ids = ids.union(r_ids)
-                    print(f"r_ids={r_ids}")
                     i += 1
                 if grouped:
                     orders = ['patient_id', 'laboratory_test_id', '-test_time']
                 else:
                     orders = ['patient_id', '-test_time']
                 queryset = SemdTest.objects.\
-                    filter(patient_id=patient_id, id__in=list(ids)).\
-                    order_by(*orders)
-                print(f"    len semds = {len(queryset)}")
+                    filter(patient_id=patient_id, id__in=list(ids)).order_by(*orders)
             else:
                 queryset = SemdTest.objects.none()
         else:
