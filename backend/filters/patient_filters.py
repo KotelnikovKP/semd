@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
 
+from backend.filters.filters import ExtraFilterSet
 from backend.models.patient_models import Patient
 
 
@@ -20,7 +21,7 @@ def filter_patient_birthday(queryset, name, value):
     return queryset.filter(birthday=value)
 
 
-class PatientFilter(filters.FilterSet):
+class PatientFilter(ExtraFilterSet):
     """
         Patient filters
     """

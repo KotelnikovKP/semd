@@ -33,7 +33,7 @@
                             <th scope="col">Дата</th>
                             <th scope="col">Услуга</th>
                             <th scope="col">Пациент</th>
-                            <th scope="col">МО</th>
+                            <th scope="col">Где</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -44,8 +44,8 @@
                             <td>{{ semd.document_type }} {{ semd.sms_profile }}</td>
                             <td>{{ Intl.DateTimeFormat().format(Date.parse(semd.service_time)) }}</td>
                             <td>{{ semd.medical_service_name }}</td>
-                            <td>{{ semd.patient_name }}</td>
-                            <td>{{ semd.medical_organization_name }}</td>
+                            <td>{{ semd.patient_name }}<br>{{ semd.diagnoses }}</td>
+                            <td>{{ semd.doctor }}<br>{{ semd.medical_position_name }}<br>{{ semd.medical_organization_name }}</td>
                             <td width="1rem" data="Детали" title="Детали">
                                 <!-- :to="`/diagnosis-registry-patients/${diagnosis_registry.id}`" -->
                                 <nuxt-link :to="`#`"

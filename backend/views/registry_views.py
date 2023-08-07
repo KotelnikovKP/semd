@@ -84,13 +84,9 @@ class DiagnosisRegistryViewSet(ModelViewSet):
         summary='Retrieve paginated and filtered patients list of diagnosis registry',
         description='Retrieve paginated and filtered patients list of diagnosis registry, bla-bla-bla...',
         responses=expand_dict({status.HTTP_200_OK: PatientListSerializer, }, simple_responses),
-        parameters=[
-                       OpenApiParameter('page', OpenApiTypes.INT, OpenApiParameter.QUERY,
-                                        description='A page number within the paginated result set.')
-                   ] + [
-                       OpenApiParameter(f.field_name, OpenApiTypes.STR, OpenApiParameter.QUERY, description=f.label)
-                       for f in dict(PatientFilter.get_filters()).values()
-                   ],
+        parameters=[OpenApiParameter('page', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                                     description='A page number within the paginated result set.')] +
+        PatientFilter.get_api_filters(),
     )
     @action(detail=True)
     def patients(self, request, *args, **kwargs):

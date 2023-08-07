@@ -77,7 +77,7 @@
                             <td>{{ event.diagnoses }}</td>
                         </tr>
                         <tr v-show="events.length == 0" :key="-1">
-                            <td colspan="3">Увы! Ни одного события в СЭМДах по этому пациенту не найдено.</td>
+                            <td class="text-info" colspan="3">Увы! Ни одного события в СЭМДах по этому пациенту не найдено.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -98,7 +98,7 @@
                             <td>{{ medical_test.value }}</td>
                         </tr>
                         <tr v-show="medical_tests.length == 0" :key="-1">
-                            <td colspan="3">Увы! Ни одного анализа в СЭМДах по этому пациенту не найдено.</td>
+                            <td class="text-info" colspan="3">Увы! Ни одного анализа в СЭМДах по этому пациенту не найдено.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -119,7 +119,7 @@
                             <td><b>Протокол:</b><br>{{ medical_examination.res_protocol }}<br><b>Заключение:</b><br>{{ medical_examination.res_conclusion }}<br><b>Диагноз:</b> {{ medical_examination.diagnoses }}</td>
                         </tr>
                         <tr v-show="medical_examinations.length == 0" :key="-1">
-                            <td colspan="3">Увы! Ни одного обследования в СЭМДах по этому пациенту не найдено.</td>
+                            <td class="text-info" colspan="3">Увы! Ни одного обследования в СЭМДах по этому пациенту не найдено.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -138,7 +138,7 @@
                             <td>{{ treatment.res_recommendation }}</td>
                         </tr>
                         <tr v-show="treatments.length == 0" :key="-1">
-                            <td colspan="3">Увы! Ни одного проведенного лечения в СЭМДах по этому пациенту не найдено.</td>
+                            <td class="text-info" colspan="3">Увы! Ни одного проведенного лечения в СЭМДах по этому пациенту не найдено.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -159,7 +159,7 @@
                             <td><b>Диагноз:</b> {{ recommended_therapy.patient_diagnosis_id }} <b>Рекомендации:</b> {{ recommended_therapy.res_recommendation }}</td>
                         </tr>
                         <tr v-show="recommended_therapies.length == 0" :key="-1">
-                            <td colspan="3">Увы! Ни одного приема специалиста в СЭМДах по этому пациенту не найдено.</td>
+                            <td class="text-info" colspan="3">Увы! Ни одного приема специалиста в СЭМДах по этому пациенту не найдено.</td>
                         </tr>
                     </tbody>
                 </table>

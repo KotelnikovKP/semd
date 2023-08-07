@@ -42,7 +42,7 @@
                             <td>{{ patient.gender }}</td>
                             <td>{{ Intl.DateTimeFormat().format(Date.parse(patient.birthday)) }}</td>
                             <td>{{ patient.diagnoses.reduce(function(sum, current) { return sum != "" ? sum + ", " + current.diagnosis_id : current.diagnosis_id }, "") }}</td>
-                            <td width="1rem" data="Детали" title="Детали">
+                            <td width="1rem" data="СЭМДы" title="СЭМДы">
                                 <nuxt-link :to="`/patient-semds/${patient.snils}`"
                                     class="btn btn-sm btn-outline-secondary">
                                     <img src="/images/document.png" class="image-table" alt="detail">
