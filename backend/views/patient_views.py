@@ -1,4 +1,5 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -6,13 +7,14 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from backend.filters.patient_filters import PatientFilter
+from backend.filters.semd_filters import SemdTestFilter, SEMDFilter
 from backend.helpers import expand_dict
 from backend.models.patient_models import Patient
 from backend.permissions.patient_permission import PatientPermission
 from backend.serializers.patient_serializers import PatientSerializer, PatientListSerializer, \
     PatientDetailsSerializer, PatientDiagnosisListSerializer, PatientMedicalCardListSerializer, \
     PatientRegistryReportDetailSerializer
-from backend.serializers.semd_serializers import SEMDListSerializer
+from backend.serializers.semd_serializers import SEMDListSerializer, SemdTestListSerializer
 from backend.serializers.serializers import simple_responses
 from backend.services.patient_report_services import GetPatientRegistryReportService
 from backend.services.patient_services import GetPatientListService, GetPatientDetailsService, \
@@ -81,6 +83,13 @@ class PatientViewSet(ModelViewSet):
         summary='Retrieve SEMDs of patient',
         description='Retrieve SEMDs of patient, bla-bla-bla...',
         responses=expand_dict({status.HTTP_200_OK: SEMDListSerializer, }, simple_responses),
+        parameters=[
+                       OpenApiParameter(f.field_name, OpenApiTypes.STR, OpenApiParameter.QUERY, description=f.label)
+                       for f in dict(SEMDFilter.get_filters()).values()
+                   ] + [
+                       OpenApiParameter('page', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                                        description='A page number within the paginated result set.')
+                   ],
     )
     @action(detail=True)
     def semds(self, request, *args, **kwargs):
@@ -93,7 +102,14 @@ class PatientViewSet(ModelViewSet):
     @extend_schema(
         summary='Retrieve laboratory tests of patient',
         description='Retrieve laboratory tests of patient, bla-bla-bla...',
-        responses=expand_dict({status.HTTP_200_OK: SEMDListSerializer, }, simple_responses),
+        responses=expand_dict({status.HTTP_200_OK: SemdTestListSerializer, }, simple_responses),
+        parameters=[
+                       OpenApiParameter('page', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                                        description='A page number within the paginated result set.')
+                   ] + [
+                       OpenApiParameter(f.field_name, OpenApiTypes.STR, OpenApiParameter.QUERY, description=f.label)
+                       for f in dict(SemdTestFilter.get_filters()).values()
+                  ],
     )
     @action(detail=True)
     def tests(self, request, *args, **kwargs):
@@ -107,6 +123,10 @@ class PatientViewSet(ModelViewSet):
         summary='Retrieve registry report of patient',
         description='Retrieve registry report of patient, bla-bla-bla...',
         responses=expand_dict({status.HTTP_200_OK: PatientRegistryReportDetailSerializer, }, simple_responses),
+        parameters=[
+            OpenApiParameter('diagnosis_registry_id', OpenApiTypes.STR, OpenApiParameter.QUERY,
+                             description='Diagnosis registry id for result set filtering.')
+        ],
     )
     @action(detail=True)
     def registry_report(self, request, *args, **kwargs):

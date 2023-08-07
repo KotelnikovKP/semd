@@ -86,7 +86,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="semd in semds" :key="semd.internal_message_id">
-                            <td><nuxt-link :to="`#`">{{ Intl.DateTimeFormat().format(Date.parse(semd.service_time)) }}</nuxt-link></td>
+                            <td><nuxt-link :to="`#`">{{ Intl.DateTimeFormat().format(Date.parse(semd.service_time)) }}</nuxt-link><br><br>{{ semd.internal_message_id }}</td>
                             <td>{{ semd.document_type }}</td>
                             <td>{{ semd.document_type == '8' ? 'Выписной эпикриз из стационара' : semd.medical_service_name }}</td>
                             <td>{{ semd.diagnoses }}</td>

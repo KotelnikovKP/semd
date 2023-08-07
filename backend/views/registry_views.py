@@ -1,9 +1,11 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from backend.filters.patient_filters import PatientFilter
 from backend.filters.registry_filters import DiagnosisRegistryFilter, DiagnosisRegistryItemFilter
 from backend.helpers import expand_dict
 from backend.models.registry_models import DiagnosisRegistry, DiagnosisRegistryItem
@@ -82,6 +84,13 @@ class DiagnosisRegistryViewSet(ModelViewSet):
         summary='Retrieve paginated and filtered patients list of diagnosis registry',
         description='Retrieve paginated and filtered patients list of diagnosis registry, bla-bla-bla...',
         responses=expand_dict({status.HTTP_200_OK: PatientListSerializer, }, simple_responses),
+        parameters=[
+                       OpenApiParameter('page', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                                        description='A page number within the paginated result set.')
+                   ] + [
+                       OpenApiParameter(f.field_name, OpenApiTypes.STR, OpenApiParameter.QUERY, description=f.label)
+                       for f in dict(PatientFilter.get_filters()).values()
+                   ],
     )
     @action(detail=True)
     def patients(self, request, *args, **kwargs):
