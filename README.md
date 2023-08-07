@@ -3,8 +3,8 @@ Application for working with ONCOR Structured Electronic Medical Document
 
 ## Table of Contents
 
-- [Backend](#Backend)
-- [Frontend](#Frontend)
+- [Backend](#backend)
+- [Frontend](#frontend)
 
 ## Backend
 
@@ -67,7 +67,7 @@ pip install -r requirements.txt
 
 Assuming you have PostgreSQL Server installed on local machine. If it is not, then use [PostgreSQL Server Downloads](https://www.postgresql.org/download/)
 
-Run the following to create a schema and user and to grant privileges in `MySQL Command Line Client`
+Run the following to create a schema and user and to grant privileges in `SQL Shell (psql)`
 
 NOTICE! Come up with your own password and substitute it in the command below instead of `password`
 
