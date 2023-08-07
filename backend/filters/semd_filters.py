@@ -1,20 +1,24 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters, DateTimeFromToRangeFilter
 
+from backend.filters.filters import ExtraFilterSet
 from backend.models.semd_models import SEMD, SemdTest
 
 
 def filter_semd_q(queryset, name, value):
-    return queryset.filter(Q(patient__name__icontains=value)
-                           | Q(patient__snils__icontains=value)
-                           | Q(diagnoses__icontains=value)
-                           | Q(patient_diagnosis__name__icontains=value)
-                           | Q(doctor__icontains=value)
-                           | Q(medical_service__ms_code__icontains=value)
-                           | Q(medical_position__name__icontains=value)
-                           | Q(medical_service__name__icontains=value)
-                           | Q(medical_organization__nameShort__icontains=value)
-                           )
+    if len(value) == 36 and value[8] == '-' and value[13] == '-' and value[18] == '-' and value[23] == '-':
+        return queryset.filter(internal_message_id=value)
+    else:
+        return queryset.filter(Q(patient__name__icontains=value)
+                               | Q(patient__snils__icontains=value)
+                               | Q(diagnoses__icontains=value)
+                               | Q(patient_diagnosis__name__icontains=value)
+                               | Q(doctor__icontains=value)
+                               | Q(medical_service__ms_code__icontains=value)
+                               | Q(medical_position__name__icontains=value)
+                               | Q(medical_service__name__icontains=value)
+                               | Q(medical_organization__nameShort__icontains=value)
+                               )
 
 
 def filter_semd_internal_message_id(queryset, name, value):
@@ -41,7 +45,7 @@ def filter_semd_medical_service_id(queryset, name, value):
     return queryset.filter(medical_service_id=value)
 
 
-class SEMDFilter(filters.FilterSet):
+class SEMDFilter(ExtraFilterSet):
     """
         SEMD filters
     """
@@ -109,7 +113,7 @@ def filter_semd_test_patient_id(queryset, name, value):
     return queryset.filter(patient_id=value)
 
 
-class SemdTestFilter(filters.FilterSet):
+class SemdTestFilter(ExtraFilterSet):
     """
         SEMD test filters
     """

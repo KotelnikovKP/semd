@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
 
+from backend.filters.filters import ExtraFilterSet
 from backend.models.registry_models import DiagnosisRegistryItem, DiagnosisRegistry
 
 
@@ -8,7 +9,7 @@ def filter_diagnosis_registry_q(queryset, name, value):
     return queryset.filter(Q(name__icontains=value) | Q(short_name__icontains=value))
 
 
-class DiagnosisRegistryFilter(filters.FilterSet):
+class DiagnosisRegistryFilter(ExtraFilterSet):
     """
         Diagnosis registry filters
     """
@@ -29,7 +30,7 @@ def filter_diagnosis_registry_item_q(queryset, name, value):
                            Q(diagnosis__name__icontains=value))
 
 
-class DiagnosisRegistryItemFilter(filters.FilterSet):
+class DiagnosisRegistryItemFilter(ExtraFilterSet):
     """
         Diagnosis registry filters
     """

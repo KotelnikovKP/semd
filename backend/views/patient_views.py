@@ -23,8 +23,7 @@ from backend.services.patient_services import GetPatientListService, GetPatientD
 
 @extend_schema(tags=['Patient'])
 class PatientViewSet(ModelViewSet):
-
-    permission_classes = (PatientPermission, )
+    permission_classes = (PatientPermission,)
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
     filterset_class = PatientFilter
@@ -83,13 +82,9 @@ class PatientViewSet(ModelViewSet):
         summary='Retrieve SEMDs of patient',
         description='Retrieve SEMDs of patient, bla-bla-bla...',
         responses=expand_dict({status.HTTP_200_OK: SEMDListSerializer, }, simple_responses),
-        parameters=[
-                       OpenApiParameter(f.field_name, OpenApiTypes.STR, OpenApiParameter.QUERY, description=f.label)
-                       for f in dict(SEMDFilter.get_filters()).values()
-                   ] + [
-                       OpenApiParameter('page', OpenApiTypes.INT, OpenApiParameter.QUERY,
-                                        description='A page number within the paginated result set.')
-                   ],
+        parameters=[OpenApiParameter('page', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                                     description='A page number within the paginated result set.')] +
+        SEMDFilter.get_api_filters(),
     )
     @action(detail=True)
     def semds(self, request, *args, **kwargs):
@@ -103,13 +98,9 @@ class PatientViewSet(ModelViewSet):
         summary='Retrieve laboratory tests of patient',
         description='Retrieve laboratory tests of patient, bla-bla-bla...',
         responses=expand_dict({status.HTTP_200_OK: SemdTestListSerializer, }, simple_responses),
-        parameters=[
-                       OpenApiParameter('page', OpenApiTypes.INT, OpenApiParameter.QUERY,
-                                        description='A page number within the paginated result set.')
-                   ] + [
-                       OpenApiParameter(f.field_name, OpenApiTypes.STR, OpenApiParameter.QUERY, description=f.label)
-                       for f in dict(SemdTestFilter.get_filters()).values()
-                  ],
+        parameters=[OpenApiParameter('page', OpenApiTypes.INT, OpenApiParameter.QUERY,
+                                     description='A page number within the paginated result set.')] +
+        SemdTestFilter.get_api_filters(),
     )
     @action(detail=True)
     def tests(self, request, *args, **kwargs):

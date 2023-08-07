@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
 
+from backend.filters.filters import ExtraFilterSet
 from backend.models.ref_inf_models import MedicalService, Diagnosis, MedicalOrganization, LaboratoryTest, \
     MedicalPosition
 
@@ -25,7 +26,7 @@ def filter_medical_service_dateout(queryset, name, value):
     return queryset.filter(dateout=value)
 
 
-class MedicalServiceFilter(filters.FilterSet):
+class MedicalServiceFilter(ExtraFilterSet):
     """
         Medical service filters
     """
@@ -72,7 +73,7 @@ def filter_diagnosis_dateout(queryset, name, value):
     return queryset.filter(dateout=value)
 
 
-class DiagnosisFilter(filters.FilterSet):
+class DiagnosisFilter(ExtraFilterSet):
     """
         Diagnosis filters
     """
@@ -119,7 +120,7 @@ def filter_medical_organization_agency_kind(queryset, name, value):
     return queryset.filter(moAgencyKind__icontains=value)
 
 
-class MedicalOrganizationFilter(filters.FilterSet):
+class MedicalOrganizationFilter(ExtraFilterSet):
     """
         Medical organization filters
     """
@@ -163,7 +164,7 @@ def filter_laboratory_test_mkb10_codes(queryset, name, value):
     return queryset.filter(mkb10_codes__icontains=value)
 
 
-class LaboratoryTestFilter(filters.FilterSet):
+class LaboratoryTestFilter(ExtraFilterSet):
     """
         Laboratory test filters
     """
@@ -195,7 +196,7 @@ def filter_medical_position_pid(queryset, name, value):
     return queryset.filter(pid=value)
 
 
-class MedicalPositionFilter(filters.FilterSet):
+class MedicalPositionFilter(ExtraFilterSet):
     """
         Medical position filters
     """
