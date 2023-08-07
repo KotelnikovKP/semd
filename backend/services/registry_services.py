@@ -1,7 +1,6 @@
 import time
 
 from django.db.models import Exists, OuterRef
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.request import Request
 from rest_framework.viewsets import ModelViewSet
