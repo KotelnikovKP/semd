@@ -41,8 +41,8 @@ class SEMD(models.Model):
     # SEMD 8
     patient_in_condition = models.CharField(null=True, blank=True, verbose_name='Hospital patient in condition')
     patient_out_condition = models.CharField(null=True, blank=True, verbose_name='Hospital patient out condition')
-    start_date = models.DateField(null=True, blank=True, verbose_name='Hospital start date')
-    end_date = models.DateField(null=True, blank=True, verbose_name='Hospital end date')
+    start_date = models.DateTimeField(null=True, blank=True, verbose_name='Hospital start date')
+    end_date = models.DateTimeField(null=True, blank=True, verbose_name='Hospital end date')
     hospitalization_urgency = models.CharField(null=True, blank=True, verbose_name='Hospital urgency')
     hospitalization_results = models.CharField(null=True, blank=True, verbose_name='Hospital results')
 
