@@ -129,13 +129,13 @@
                     <thead>
                         <tr>
                             <th scope="col">Дата</th>
-                            <th scope="col">Состав лечения</th>
+                            <th scope="col">Операция</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="treatment in treatments" :key="treatment.internal_message_id">
                             <td><nuxt-link :to="`#`">{{ Intl.DateTimeFormat().format(Date.parse(treatment.service_time)) }}</nuxt-link></td>
-                            <td>{{ treatment.res_recommendation }}</td>
+                            <td>{{ treatment.medical_service_name }}:<br><b>{{ treatment.doctor }}</b><br>{{ treatment.medical_position_name }}<br>{{ treatment.medical_organization_name }}</td>
                         </tr>
                         <tr v-show="treatments.length == 0" :key="-1">
                             <td class="text-info" colspan="3">Увы! Ни одного проведенного лечения в СЭМДах по этому пациенту не найдено.</td>

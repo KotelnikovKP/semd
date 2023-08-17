@@ -3,7 +3,7 @@ from django.db.models import Index, UniqueConstraint
 
 
 class Patient(models.Model):
-    snils = models.CharField(max_length=11, primary_key=True, verbose_name='Patient SNILS')
+    snils = models.CharField(max_length=14, primary_key=True, verbose_name='Patient SNILS')
     name = models.CharField(max_length=255, verbose_name='Patient name')
     gender = models.CharField(max_length=7, null=True, blank=True, verbose_name='Patient gender')
     birthday = models.DateField(null=True, blank=True, verbose_name='Patient birthday')
